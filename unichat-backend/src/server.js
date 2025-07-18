@@ -1,3 +1,4 @@
+// src/server.js
 require('dotenv').config({ path: './.env' });
 const app = require('./app');
 const connectDB = require('./config/db');
@@ -11,6 +12,9 @@ const io = new Server(server, {
   cors: { origin: "*" }
 });
 
+// We are exporting 'io' so it can be used in app.js
+module.exports.io = io;
+
 io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
 
@@ -20,7 +24,6 @@ io.on('connection', (socket) => {
   });
 
   socket.on('sendMessage', (data) => {
-    // data: { roomId, message }
     console.log("Emitting to room:", data.roomId, "Message:", data.message);
     io.to(data.roomId).emit('receiveMessage', data.message);
   });
@@ -35,5 +38,3 @@ connectDB().then(() => {
     console.log(`Server running on port ${PORT}`);
   });
 });
-
-module.exports = io; // Export if you want to use in controllers

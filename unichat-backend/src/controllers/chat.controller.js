@@ -1,7 +1,5 @@
 const Message = require('../models/Message');
 const Conversation = require('../models/Conversation');
-const io = require("../server");
-// const { getOpenAISummary } = require('../services/ai.service');
 
 // Send a message
 exports.sendMessage = async (req, res) => {
@@ -15,8 +13,10 @@ exports.sendMessage = async (req, res) => {
       isAnonymous,
     });
     const populatedMessage = await message.populate('sender', 'name role');
-    console.log("Emitting to room:", conversationId, "Message:", populatedMessage);
-    io.to(conversationId).emit('receiveMessage', populatedMessage);
+    
+    // Use req.io which we attached in our middleware
+    req.io.to(conversationId).emit('receiveMessage', populatedMessage);
+    
     res.status(201).json(populatedMessage);
   } catch (err) {
     res.status(500).json({ message: err.message });

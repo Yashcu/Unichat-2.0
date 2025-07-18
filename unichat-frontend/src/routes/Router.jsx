@@ -1,5 +1,5 @@
 // src/routes/Router.jsx
-import React, { useEffect } from "react";
+import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "../pages/auth/Login";
 import Signup from "../pages/auth/Signup";
@@ -15,22 +15,64 @@ import StudentChatPage from "../pages/student/Chat";
 import FacultyChatPage from "../pages/faculty/Chat";
 import AdminChatPage from "../pages/admin/Chat";
 
-function Router(props) {
-  useEffect(() => {
-    console.log("Router rendered", props);
-  }, [props]);
+const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
-  // Only check user.role if user exists
-  const getDashboard = () => {
-    if (!user) return <Navigate to="/auth/login" />;
-    if (user.role === "student") return <StudentLayout><StudentDashboard /></StudentLayout>;
-    if (user.role === "faculty") return <FacultyLayout><FacultyDashboard /></FacultyLayout>;
-    if (user.role === "admin") return <AdminLayout><AdminDashboard /></AdminLayout>;
-    return <div>Unknown role</div>;
+  if (!user) {
+    return <Navigate to="/auth/login" />;
+  }
+
+  return children;
+};
+
+const RoleBasedLayout = () => {
+  const { user } = useAuth();
+
+  if (!user) {
+    return <Navigate to="/auth/login" />;
+  }
+  
+  switch (user.role) {
+    case "student":
+      return <StudentLayout><StudentDashboard /></StudentLayout>;
+    case "faculty":
+      return <FacultyLayout><FacultyDashboard /></FacultyLayout>;
+    case "admin":
+      return <AdminLayout><AdminDashboard /></AdminLayout>;
+    default:
+      return <div>Unknown role</div>;
+  }
+};
+
+const RoleBasedChatLayout = () => {
+    const { user } = useAuth();
+  
+    if (!user) {
+      return <Navigate to="/auth/login" />;
+    }
+  
+    switch (user.role) {
+      case "student":
+        return <StudentLayout><StudentChatPage /></StudentLayout>;
+      case "faculty":
+        return <FacultyLayout><FacultyChatPage /></FacultyLayout>;
+      case "admin":
+        return <AdminLayout><AdminChatPage /></AdminLayout>;
+      default:
+        return <div>Unknown role</div>;
+    }
   };
+
+function Router() {
+  const { loading } = useAuth();
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <BrowserRouter>
@@ -38,13 +80,23 @@ function Router(props) {
         <Route path="/auth/login" element={<Login />} />
         <Route path="/auth/signup" element={<Signup />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
-        <Route path="/" element={getDashboard()} />
-        <Route path="/chat" element={
-          user && user.role === "student" ? <StudentLayout><StudentChatPage /></StudentLayout> :
-          user && user.role === "faculty" ? <FacultyLayout><FacultyChatPage /></FacultyLayout> :
-          user && user.role === "admin" ? <AdminLayout><AdminChatPage /></AdminLayout> :
-          <Navigate to="/" />
-        } />
+        
+        <Route 
+          path="/" 
+          element={
+            <ProtectedRoute>
+              <RoleBasedLayout />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/chat" 
+          element={
+            <ProtectedRoute>
+              <RoleBasedChatLayout />
+            </ProtectedRoute>
+          } 
+        />
         {/* Add more protected routes for each role as needed */}
       </Routes>
     </BrowserRouter>

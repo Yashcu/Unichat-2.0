@@ -1,6 +1,8 @@
+// src/context/ChatProvider.jsx
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { io } from 'socket.io-client';
 import useAuth from '../hooks/useAuth';
+import api from '../services/api'; // Import your api service
 
 export const ChatContext = createContext();
 
@@ -26,7 +28,10 @@ export const ChatProvider = ({ children }) => {
       });
 
       newSocket.on('receiveMessage', (message) => {
-        setMessages(prev => [...prev, message]);
+        // Only add the message if it belongs to the active conversation
+        if (message.conversation === activeConversation) {
+            setMessages(prev => [...prev, message]);
+        }
       });
 
       newSocket.on('disconnect', () => {
@@ -34,12 +39,13 @@ export const ChatProvider = ({ children }) => {
       });
 
       setSocket(newSocket);
+      loadConversations();
 
       return () => {
         newSocket.close();
       };
     }
-  }, [user, token]);
+  }, [user, token, activeConversation]);
 
   // Send message
   const sendMessage = (content, conversationId) => {
@@ -50,14 +56,12 @@ export const ChatProvider = ({ children }) => {
         sender: user.id,
         timestamp: new Date()
       };
-
+      // We no longer need to optimistically update the UI here
+      // because the server will broadcast the message back to us
       socket.emit('sendMessage', {
         roomId: conversationId,
         message
       });
-
-      // Optimistically add message to UI
-      setMessages(prev => [...prev, message]);
     }
   };
 
@@ -66,6 +70,7 @@ export const ChatProvider = ({ children }) => {
     if (socket) {
       socket.emit('joinRoom', conversationId);
       setActiveConversation(conversationId);
+      loadMessages(conversationId); // Load messages when joining
     }
   };
 
@@ -73,12 +78,10 @@ export const ChatProvider = ({ children }) => {
   const loadConversations = async () => {
     setLoading(true);
     try {
-      // TODO: Fetch conversations from API
-      const mockConversations = [
-        { id: '1', name: 'CS101 Study Group', type: 'group', lastMessage: 'When is the exam?' },
-        { id: '2', name: 'Prof. Smith', type: 'one-to-one', lastMessage: 'Assignment submitted' }
-      ];
-      setConversations(mockConversations);
+      const response = await api.get('/chat/conversations', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setConversations(response.data);
     } catch (error) {
       console.error('Error loading conversations:', error);
     } finally {
@@ -90,12 +93,10 @@ export const ChatProvider = ({ children }) => {
   const loadMessages = async (conversationId) => {
     setLoading(true);
     try {
-      // TODO: Fetch messages from API
-      const mockMessages = [
-        { id: '1', content: 'Hello!', sender: 'user1', timestamp: new Date() },
-        { id: '2', content: 'Hi there!', sender: 'user2', timestamp: new Date() }
-      ];
-      setMessages(mockMessages);
+        const response = await api.get(`/chat/messages/${conversationId}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+      setMessages(response.data);
     } catch (error) {
       console.error('Error loading messages:', error);
     } finally {
@@ -113,7 +114,7 @@ export const ChatProvider = ({ children }) => {
     joinConversation,
     loadConversations,
     loadMessages,
-    setActiveConversation
+    setActiveConversation: joinConversation, // Use joinConversation to set active conversation
   };
 
   return (
