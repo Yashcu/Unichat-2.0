@@ -12,5 +12,6 @@ router.use('/user', require('./user.routes'));
 router.use('/faculty', require('./faculty.routes'));
 router.use('/materials', require('./materials.routes'));
 router.use('/notifications', require('./notifications.routes'));
+router.use('/grades', require('./grade.routes'));
 
 module.exports = router;

@@ -12,7 +12,7 @@ const SystemLogsPage = () => {
             try {
                 const response = await getSystemLogs();
                 setLogs(response.data);
-            } catch (err) {
+            } catch {
                 setError('Failed to fetch system logs.');
             } finally {
                 setLoading(false);

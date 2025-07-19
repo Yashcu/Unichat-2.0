@@ -1,9 +1,10 @@
+// src/components/NewChatModal.jsx
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { searchUsers } from '../services/user';
-import { createConversation } from '../services/chat'; // We need this service
+import { createConversation } from '../services/chat';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const NewChatModal = ({ onConversationCreated }) => {
     const [searchQuery, setSearchQuery] = useState('');
@@ -67,6 +68,10 @@ const NewChatModal = ({ onConversationCreated }) => {
             </Button>
         </div>
     );
+};
+
+NewChatModal.propTypes = {
+    onConversationCreated: PropTypes.func.isRequired
 };
 
 export default NewChatModal;

@@ -1,5 +1,6 @@
 // src/components/CreateAssignmentForm.jsx
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { getAllStudents, createAssignment } from '../services/faculty';
 
 const CreateAssignmentForm = ({ onAssignmentCreated }) => {
@@ -15,7 +16,7 @@ const CreateAssignmentForm = ({ onAssignmentCreated }) => {
             try {
                 const response = await getAllStudents();
                 setStudents(response.data);
-            } catch (err) {
+            } catch {
                 setError('Could not load students list.');
             }
         };
@@ -45,7 +46,7 @@ const CreateAssignmentForm = ({ onAssignmentCreated }) => {
             setDeadline('');
             setSelectedStudents([]);
             if (onAssignmentCreated) onAssignmentCreated();
-        } catch (err) {
+        } catch {
             setError('Failed to create assignment.');
         }
     };
@@ -74,6 +75,10 @@ const CreateAssignmentForm = ({ onAssignmentCreated }) => {
             <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded-md">Create Assignment</button>
         </form>
     );
+};
+
+CreateAssignmentForm.propTypes = {
+    onAssignmentCreated: PropTypes.func
 };
 
 export default CreateAssignmentForm;

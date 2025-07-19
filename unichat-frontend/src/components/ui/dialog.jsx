@@ -1,8 +1,10 @@
+// src/components/ui/dialog.jsx
 "use client"
 
 import * as React from "react"
 import * as DialogPrimitive from "@radix-ui/react-dialog"
 import { XIcon } from "lucide-react"
+import PropTypes from 'prop-types';
 
 import { cn } from "@/lib/utils"
 
@@ -44,6 +46,7 @@ function DialogOverlay({
       {...props} />
   );
 }
+DialogOverlay.propTypes = { className: PropTypes.string };
 
 function DialogContent({
   className,
@@ -74,6 +77,11 @@ function DialogContent({
     </DialogPortal>
   );
 }
+DialogContent.propTypes = {
+    className: PropTypes.string,
+    children: PropTypes.node,
+    showCloseButton: PropTypes.bool
+};
 
 function DialogHeader({
   className,
@@ -86,6 +94,7 @@ function DialogHeader({
       {...props} />
   );
 }
+DialogHeader.propTypes = { className: PropTypes.string };
 
 function DialogFooter({
   className,
@@ -98,6 +107,7 @@ function DialogFooter({
       {...props} />
   );
 }
+DialogFooter.propTypes = { className: PropTypes.string };
 
 function DialogTitle({
   className,
@@ -110,6 +120,7 @@ function DialogTitle({
       {...props} />
   );
 }
+DialogTitle.propTypes = { className: PropTypes.string };
 
 function DialogDescription({
   className,
@@ -122,6 +133,7 @@ function DialogDescription({
       {...props} />
   );
 }
+DialogDescription.propTypes = { className: PropTypes.string };
 
 export {
   Dialog,

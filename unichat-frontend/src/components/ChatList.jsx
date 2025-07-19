@@ -1,6 +1,6 @@
 // src/components/ChatList.jsx
 import React, { useState } from 'react';
-import { useChat } from '../context/ChatProvider';
+import { useChat } from '../context/SocketProvider';
 import useAuth from '../hooks/useAuth';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from './ui/button';

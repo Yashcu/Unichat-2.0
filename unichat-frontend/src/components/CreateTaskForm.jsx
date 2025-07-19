@@ -1,4 +1,6 @@
+// src/components/CreateTaskForm.jsx
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { createTask } from '../services/tasks';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -22,7 +24,7 @@ const CreateTaskForm = ({ onTaskCreated }) => {
             if (onTaskCreated) {
                 onTaskCreated();
             }
-        } catch (err) {
+        } catch {
             setError('Failed to create task.');
         } finally {
             setLoading(false);
@@ -43,6 +45,10 @@ const CreateTaskForm = ({ onTaskCreated }) => {
             </Button>
         </form>
     );
+};
+
+CreateTaskForm.propTypes = {
+    onTaskCreated: PropTypes.func
 };
 
 export default CreateTaskForm;

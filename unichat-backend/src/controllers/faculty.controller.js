@@ -34,7 +34,7 @@ exports.getAllStudents = async (req, res) => {
     try {
         const students = await User.find({ role: 'student' }).select('name email');
         res.json(students);
-    } catch (err) {
+    } catch {
         res.status(500).json({ message: 'Error fetching students' });
     }
 };

@@ -1,5 +1,6 @@
+// src/components/ui/card.jsx
 import * as React from "react"
-
+import PropTypes from 'prop-types';
 import { cn } from "@/lib/utils"
 
 function Card({
@@ -16,6 +17,7 @@ function Card({
       {...props} />
   );
 }
+Card.propTypes = { className: PropTypes.string };
 
 function CardHeader({
   className,
@@ -31,6 +33,7 @@ function CardHeader({
       {...props} />
   );
 }
+CardHeader.propTypes = { className: PropTypes.string };
 
 function CardTitle({
   className,
@@ -43,6 +46,7 @@ function CardTitle({
       {...props} />
   );
 }
+CardTitle.propTypes = { className: PropTypes.string };
 
 function CardDescription({
   className,
@@ -55,6 +59,7 @@ function CardDescription({
       {...props} />
   );
 }
+CardDescription.propTypes = { className: PropTypes.string };
 
 function CardAction({
   className,
@@ -70,6 +75,7 @@ function CardAction({
       {...props} />
   );
 }
+CardAction.propTypes = { className: PropTypes.string };
 
 function CardContent({
   className,
@@ -77,6 +83,7 @@ function CardContent({
 }) {
   return (<div data-slot="card-content" className={cn("px-6", className)} {...props} />);
 }
+CardContent.propTypes = { className: PropTypes.string };
 
 function CardFooter({
   className,
@@ -89,6 +96,7 @@ function CardFooter({
       {...props} />
   );
 }
+CardFooter.propTypes = { className: PropTypes.string };
 
 export {
   Card,

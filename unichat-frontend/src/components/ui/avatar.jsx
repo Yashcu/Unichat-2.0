@@ -1,5 +1,7 @@
+// src/components/ui/avatar.jsx
 import * as React from "react"
 import * as AvatarPrimitive from "@radix-ui/react-avatar"
+import PropTypes from 'prop-types';
 
 import { cn } from "@/lib/utils"
 
@@ -14,6 +16,9 @@ function Avatar({
       {...props} />
   );
 }
+Avatar.propTypes = {
+    className: PropTypes.string
+};
 
 function AvatarImage({
   className,
@@ -26,6 +31,9 @@ function AvatarImage({
       {...props} />
   );
 }
+AvatarImage.propTypes = {
+    className: PropTypes.string
+};
 
 function AvatarFallback({
   className,
@@ -41,5 +49,8 @@ function AvatarFallback({
       {...props} />
   );
 }
+AvatarFallback.propTypes = {
+    className: PropTypes.string
+};
 
 export { Avatar, AvatarImage, AvatarFallback }

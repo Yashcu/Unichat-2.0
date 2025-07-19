@@ -14,7 +14,7 @@ const CalendarPage = () => {
     try {
       const response = await getEvents();
       setEvents(response.data);
-    } catch (err) {
+    } catch {
       setError('Failed to fetch events.');
     }
   };
@@ -30,17 +30,17 @@ const CalendarPage = () => {
       await createEvent({ title, date });
       setTitle('');
       setDate('');
-      fetchEvents(); // Refetch events to show the new one
-    } catch (err) {
+      fetchEvents();
+    } catch {
       setError('Failed to create event.');
     }
   };
-  
+
   const handleDeleteEvent = async (eventId) => {
     try {
         await deleteEvent(eventId);
-        fetchEvents(); // Refetch to remove the event from the list
-    } catch(err) {
+        fetchEvents();
+    } catch {
         setError('Failed to delete event.');
     }
   };
@@ -49,8 +49,7 @@ const CalendarPage = () => {
     <div className="p-4 bg-white rounded-lg shadow h-full">
       <h1 className="text-2xl font-bold mb-4">Academic Calendar</h1>
       {error && <p className="text-red-500">{error}</p>}
-      
-      {/* Create Event Form */}
+
       <form onSubmit={handleCreateEvent} className="mb-6 p-4 border rounded-md">
         <h2 className="text-lg font-semibold mb-2">Add New Event</h2>
         <div className="flex flex-col md:flex-row gap-4">
@@ -71,7 +70,6 @@ const CalendarPage = () => {
         </div>
       </form>
 
-      {/* Event List */}
       <div className="space-y-3">
         {events.length > 0 ? events.map((event) => (
           <div key={event._id} className="flex items-center justify-between p-3 rounded-md bg-gray-50 border">
@@ -81,7 +79,6 @@ const CalendarPage = () => {
                 {new Date(event.date).toLocaleDateString()} - (Created by: {event.createdBy.name})
               </p>
             </div>
-            {/* Show delete button only if user created the event or is an admin */}
             {(user.id === event.createdBy._id || user.role === 'admin') && (
                  <button onClick={() => handleDeleteEvent(event._id)} className="text-red-500 hover:text-red-700">
                     Delete

@@ -5,6 +5,7 @@ const authController = require('../controllers/auth.controller');
 const { isAuthenticated } = require('../middleware/auth');
 
 router.post('/login', authController.login);
+router.post('/refresh', authController.refreshToken);
 router.get('/me', isAuthenticated, authController.getProfile);
 
 module.exports = router;

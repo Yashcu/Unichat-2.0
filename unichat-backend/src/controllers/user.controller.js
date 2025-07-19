@@ -54,7 +54,7 @@ exports.searchUsers = async (req, res) => {
         .limit(10); // Limit results for performance
 
         res.json(users);
-    } catch (err) {
+    } catch {
         res.status(500).json({ message: 'Error searching for users' });
     }
 };
@@ -65,7 +65,7 @@ exports.getNotifications = async (req, res) => {
             .sort({ createdAt: 'desc' })
             .limit(20); // Get the 20 most recent notifications
         res.json(notifications);
-    } catch (err) {
+    } catch {
         res.status(500).json({ message: 'Error fetching notifications' });
     }
 };
@@ -89,7 +89,7 @@ exports.updateProfile = async (req, res) => {
             email: updatedUser.email,
             role: updatedUser.role
         });
-    } catch (err) {
+    } catch {
         res.status(500).json({ message: 'Error updating profile' });
     }
 };
@@ -114,7 +114,7 @@ exports.changePassword = async (req, res) => {
         await user.save();
 
         res.json({ message: 'Password changed successfully.' });
-    } catch (err) {
+    } catch {
         res.status(500).json({ message: 'Error changing password' });
     }
 };

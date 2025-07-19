@@ -1,8 +1,9 @@
 // src/pages/faculty/dashboard.jsx
 import React, { useState, useEffect } from 'react';
 import { getFacultyDashboardStats } from '../../services/faculty';
-import { Link } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
+import StatCard from '../../components/dashboard/StatCard';
+import QuickActionLink from '../../components/dashboard/QuickActionLink';
 
 const FacultyDashboard = () => {
     const { user } = useAuth();
@@ -38,32 +39,13 @@ const FacultyDashboard = () => {
             <div className="bg-white rounded-lg shadow p-6">
                 <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <QuickActionLink to="/tasks" label="Manage Tasks" />
-                    <QuickActionLink to="/calendar" label="Manage Calendar" />
-                    <QuickActionLink to="/chat" label="Open Chat" />
+                    <QuickActionLink to="/tasks" label="Manage Tasks" color="green" />
+                    <QuickActionLink to="/calendar" label="Manage Calendar" color="green" />
+                    <QuickActionLink to="/chat" label="Open Chat" color="green" />
                 </div>
             </div>
         </div>
     );
 };
-
-// Helper component for stat cards
-const StatCard = ({ title, value, loading }) => (
-    <div className="bg-white rounded-lg shadow p-6">
-        <p className="text-sm font-medium text-gray-600">{title}</p>
-        {loading ? (
-            <div className="h-8 bg-gray-200 rounded animate-pulse mt-1"></div>
-        ) : (
-            <p className="text-2xl font-bold text-gray-900">{value}</p>
-        )}
-    </div>
-);
-
-// Helper component for quick action buttons
-const QuickActionLink = ({ to, label }) => (
-    <Link to={to} className="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-green-500 hover:bg-green-50 transition-colors text-center">
-        <p className="text-sm font-medium text-gray-700">{label}</p>
-    </Link>
-);
 
 export default FacultyDashboard;

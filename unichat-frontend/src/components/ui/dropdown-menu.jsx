@@ -1,6 +1,8 @@
+// src/components/ui/dropdown-menu.jsx
 import * as React from "react"
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu"
 import { CheckIcon, ChevronRightIcon, CircleIcon } from "lucide-react"
+import PropTypes from 'prop-types';
 
 import { cn } from "@/lib/utils"
 
@@ -40,6 +42,10 @@ function DropdownMenuContent({
     </DropdownMenuPrimitive.Portal>
   );
 }
+DropdownMenuContent.propTypes = {
+    className: PropTypes.string,
+    sideOffset: PropTypes.number
+};
 
 function DropdownMenuGroup({
   ...props
@@ -65,6 +71,11 @@ function DropdownMenuItem({
       {...props} />
   );
 }
+DropdownMenuItem.propTypes = {
+    className: PropTypes.string,
+    inset: PropTypes.bool,
+    variant: PropTypes.string
+};
 
 function DropdownMenuCheckboxItem({
   className,
@@ -91,6 +102,11 @@ function DropdownMenuCheckboxItem({
     </DropdownMenuPrimitive.CheckboxItem>
   );
 }
+DropdownMenuCheckboxItem.propTypes = {
+    className: PropTypes.string,
+    children: PropTypes.node,
+    checked: PropTypes.bool
+};
 
 function DropdownMenuRadioGroup({
   ...props
@@ -121,6 +137,10 @@ function DropdownMenuRadioItem({
     </DropdownMenuPrimitive.RadioItem>
   );
 }
+DropdownMenuRadioItem.propTypes = {
+    className: PropTypes.string,
+    children: PropTypes.node
+};
 
 function DropdownMenuLabel({
   className,
@@ -135,6 +155,10 @@ function DropdownMenuLabel({
       {...props} />
   );
 }
+DropdownMenuLabel.propTypes = {
+    className: PropTypes.string,
+    inset: PropTypes.bool
+};
 
 function DropdownMenuSeparator({
   className,
@@ -147,6 +171,7 @@ function DropdownMenuSeparator({
       {...props} />
   );
 }
+DropdownMenuSeparator.propTypes = { className: PropTypes.string };
 
 function DropdownMenuShortcut({
   className,
@@ -159,6 +184,7 @@ function DropdownMenuShortcut({
       {...props} />
   );
 }
+DropdownMenuShortcut.propTypes = { className: PropTypes.string };
 
 function DropdownMenuSub({
   ...props
@@ -186,6 +212,11 @@ function DropdownMenuSubTrigger({
     </DropdownMenuPrimitive.SubTrigger>
   );
 }
+DropdownMenuSubTrigger.propTypes = {
+    className: PropTypes.string,
+    inset: PropTypes.bool,
+    children: PropTypes.node
+};
 
 function DropdownMenuSubContent({
   className,
@@ -201,6 +232,7 @@ function DropdownMenuSubContent({
       {...props} />
   );
 }
+DropdownMenuSubContent.propTypes = { className: PropTypes.string };
 
 export {
   DropdownMenu,

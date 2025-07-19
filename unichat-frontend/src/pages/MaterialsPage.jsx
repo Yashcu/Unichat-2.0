@@ -1,4 +1,6 @@
+// src/pages/MaterialsPage.jsx
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import useAuth from '../hooks/useAuth';
 import { getMaterials, uploadMaterial } from '../services/materials';
 import { Button } from '@/components/ui/button';
@@ -15,7 +17,7 @@ const MaterialsPage = () => {
         try {
             const response = await getMaterials();
             setMaterials(response.data);
-        } catch (err) {
+        } catch {
             setError('Failed to fetch materials.');
         } finally {
             setLoading(false);
@@ -102,6 +104,10 @@ const UploadMaterialForm = ({ onUploadSuccess }) => {
     );
 };
 
+UploadMaterialForm.propTypes = {
+    onUploadSuccess: PropTypes.func.isRequired
+};
+
 const MaterialCard = ({ material }) => {
     const downloadUrl = `${import.meta.env.VITE_API_URL.replace('/api', '')}/${material.filePath}`;
     return (
@@ -118,6 +124,18 @@ const MaterialCard = ({ material }) => {
             </CardContent>
         </Card>
     );
+};
+
+MaterialCard.propTypes = {
+    material: PropTypes.shape({
+        _id: PropTypes.string.isRequired,
+        filePath: PropTypes.string.isRequired,
+        title: PropTypes.string.isRequired,
+        course: PropTypes.string.isRequired,
+        uploadedBy: PropTypes.shape({
+            name: PropTypes.string.isRequired
+        }).isRequired
+    }).isRequired
 };
 
 export default MaterialsPage;

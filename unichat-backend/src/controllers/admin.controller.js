@@ -45,7 +45,7 @@ exports.getAllUsers = async (req, res) => {
             .select('name email role createdAt') // Only fetch necessary fields for the list view
             .sort({ createdAt: 'desc' });
         res.json(users);
-    } catch (err) {
+    } catch {
         res.status(500).json({ message: 'Error fetching users' });
     }
 };
@@ -70,7 +70,7 @@ exports.updateUser = async (req, res) => {
         await Log.create({ user: req.user.id, action: 'admin_update_user', resourceId: updatedUser._id, details: `Updated user ${updatedUser.name}` });
 
         res.json(updatedUser);
-    } catch (err) {
+    } catch {
         res.status(500).json({ message: 'Error updating user' });
     }
 };
@@ -91,7 +91,7 @@ exports.deleteUser = async (req, res) => {
         await Log.create({ user: req.user.id, action: 'admin_delete_user', resourceId: id, details: `Deleted user ${deletedUser.name}` });
 
         res.json({ message: 'User deleted successfully' });
-    } catch (err) {
+    } catch {
         res.status(500).json({ message: 'Error deleting user' });
     }
 };
@@ -103,7 +103,7 @@ exports.getSystemLogs = async (req, res) => {
             .sort({ createdAt: 'desc' })
             .limit(100);
         res.json(logs);
-    } catch (err) {
+    } catch {
         res.status(500).json({ message: 'Error fetching system logs' });
     }
 };
@@ -159,7 +159,7 @@ exports.getDashboardStats = async (req, res) => {
             totalEvents,
             recentLogs
         });
-    } catch (err) {
+    } catch {
         res.status(500).json({ message: 'Error fetching admin dashboard stats' });
     }
 };

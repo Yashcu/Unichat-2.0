@@ -1,4 +1,6 @@
+// src/components/Header.jsx
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import useAuth from '../hooks/useAuth';
 import { useChat } from '../context/ChatProvider';
 import { getNotifications, markAllNotificationsAsRead } from '../services/notifications';
@@ -6,7 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Bell } from 'lucide-react';
-import { Link } from 'react-router-dom'; // Make sure Link is imported
+import { Link } from 'react-router-dom';
 
 const Header = ({ title }) => {
     const { user, logout } = useAuth();
@@ -14,7 +16,7 @@ const Header = ({ title }) => {
     const [notifications, setNotifications] = useState([]);
 
     useEffect(() => {
-        if(user) { // Only fetch notifications if a user is logged in
+        if(user) {
             getNotifications().then(res => setNotifications(res.data)).catch(console.error);
         }
     }, [user]);
@@ -92,7 +94,6 @@ const Header = ({ title }) => {
                             </div>
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        {/* Add the Profile link here */}
                         <DropdownMenuItem asChild>
                             <Link to="/profile">Profile</Link>
                         </DropdownMenuItem>
@@ -105,6 +106,10 @@ const Header = ({ title }) => {
             </div>
         </header>
     );
+};
+
+Header.propTypes = {
+    title: PropTypes.string.isRequired
 };
 
 export default Header;

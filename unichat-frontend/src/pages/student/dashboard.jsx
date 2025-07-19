@@ -1,11 +1,12 @@
+// src/pages/student/dashboard.jsx
 import React, { useState, useEffect } from 'react';
 import useAuth from '../../hooks/useAuth';
 import { getDashboardStats } from '../../services/user';
 import { Link } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import CreateTaskForm from '../../components/CreateTaskForm';
+import StatCard from '../../components/dashboard/StatCard'; // Import the new component
 
 const StudentDashboard = () => {
   const { user } = useAuth();
@@ -69,16 +70,5 @@ const StudentDashboard = () => {
     </div>
   );
 };
-
-const StatCard = ({ title, value, loading }) => (
-    <Card>
-        <CardHeader>
-            <CardTitle className="text-sm font-medium">{title}</CardTitle>
-        </CardHeader>
-        <CardContent>
-            {loading ? <Skeleton className="h-8 w-1/2" /> : <div className="text-2xl font-bold">{value}</div>}
-        </CardContent>
-    </Card>
-);
 
 export default StudentDashboard;

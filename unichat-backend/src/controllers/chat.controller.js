@@ -20,7 +20,7 @@ exports.getMessages = async (req, res) => {
       .populate('sender', 'name role')
       .sort({ createdAt: 'asc' });
     res.json(messages);
-  } catch (err) {
+  } catch {
     res.status(500).json({ message: 'Error fetching messages' });
   }
 };

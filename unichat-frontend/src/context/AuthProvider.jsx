@@ -1,6 +1,7 @@
 // src/context/AuthProvider.jsx
 import React, { createContext, useState, useEffect } from "react";
-import api from "../services/api"; // We need to use the api service here
+import PropTypes from 'prop-types';
+import api, { setAuthHeader } from "../services/api";
 
 export const AuthContext = createContext();
 
@@ -13,15 +14,14 @@ export const AuthProvider = ({ children }) => {
     const fetchProfile = async () => {
       if (token) {
         try {
-          // Set the authorization header for all future api requests
-          api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-          const res = await api.get("/auth/me"); // This endpoint needs to exist
+          setAuthHeader(token);
+          const res = await api.get("/auth/me");
           setUser(res.data);
         } catch {
-          // If the token is invalid, clear it
           setUser(null);
           setToken(null);
           localStorage.removeItem("token");
+          setAuthHeader(null);
         }
       }
       setLoading(false);
@@ -33,14 +33,14 @@ export const AuthProvider = ({ children }) => {
     setToken(token);
     setUser(user);
     localStorage.setItem("token", token);
+    setAuthHeader(token);
   };
 
   const logout = () => {
     setToken(null);
     setUser(null);
     localStorage.removeItem("token");
-    // Remove the authorization header
-    delete api.defaults.headers.common['Authorization'];
+    setAuthHeader(null);
   };
 
   return (
@@ -48,4 +48,8 @@ export const AuthProvider = ({ children }) => {
       {children}
     </AuthContext.Provider>
   );
+};
+
+AuthProvider.propTypes = {
+    children: PropTypes.node.isRequired
 };

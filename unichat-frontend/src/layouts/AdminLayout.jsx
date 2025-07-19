@@ -1,5 +1,6 @@
 // src/layouts/AdminLayout.jsx
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Link, useLocation } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 
@@ -16,7 +17,6 @@ const AdminLayout = ({ children }) => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
-      {/* Sidebar */}
       <div className="w-64 bg-white shadow-lg flex flex-col">
         <div className="flex items-center justify-center h-16 bg-red-600">
           <h1 className="text-xl font-bold text-white">UniChat Admin</h1>
@@ -41,13 +41,15 @@ const AdminLayout = ({ children }) => {
           <button onClick={logout} className="text-sm text-red-500 hover:underline">Logout</button>
         </div>
       </div>
-
-      {/* Main Content */}
       <div className="flex-1">
         <main className="p-6 h-full">{children}</main>
       </div>
     </div>
   );
+};
+
+AdminLayout.propTypes = {
+    children: PropTypes.node.isRequired
 };
 
 export default AdminLayout;

@@ -1,11 +1,11 @@
 // src/pages/TasksPage.jsx
-import React, { useState, useEffect, useRef } from 'react';
-import { getTasks, updateTask, deleteTask, uploadAttachment } from '../services/tasks';
+import React, { useEffect, useRef } from 'react';
+import PropTypes from 'prop-types';
+import { useTaskStore } from '../store/useTaskStore';
 import CreateTaskForm from '../components/CreateTaskForm';
-import CreateAssignmentForm from '../components/CreateAssignmentForm'; // Import the new form
-import useAuth from '../hooks/useAuth'; // Import useAuth to check role
+import CreateAssignmentForm from '../components/CreateAssignmentForm';
+import useAuth from '../hooks/useAuth';
 
-// ... (TaskItem component remains the same)
 const TaskItem = ({ task, onToggle, onDelete, onUpload }) => {
     const fileInputRef = useRef(null);
 
@@ -44,54 +44,26 @@ const TaskItem = ({ task, onToggle, onDelete, onUpload }) => {
     );
 };
 
+TaskItem.propTypes = {
+    task: PropTypes.shape({
+        _id: PropTypes.string.isRequired,
+        title: PropTypes.string.isRequired,
+        isCompleted: PropTypes.bool.isRequired,
+        type: PropTypes.string,
+        attachments: PropTypes.arrayOf(PropTypes.string)
+    }).isRequired,
+    onToggle: PropTypes.func.isRequired,
+    onDelete: PropTypes.func.isRequired,
+    onUpload: PropTypes.func.isRequired
+};
 
 const TasksPage = () => {
-  const [tasks, setTasks] = useState([]);
-  const [error, setError] = useState('');
-  const { user } = useAuth(); // Get the user's role
-
-  // ... (fetchTasks, handleToggleComplete, handleDeleteTask, handleUpload functions are the same)
-  const fetchTasks = async () => {
-    try {
-      const response = await getTasks();
-      setTasks(response.data);
-    } catch (err) {
-      setError('Failed to fetch tasks.');
-    }
-  };
+  const { tasks, loading, error, fetchTasks, toggleTaskComplete, removeTask, uploadTaskAttachment } = useTaskStore();
+  const { user } = useAuth();
 
   useEffect(() => {
     fetchTasks();
-  }, []);
-
-  const handleToggleComplete = async (task) => {
-    try {
-      await updateTask(task._id, { isCompleted: !task.isCompleted });
-      fetchTasks();
-    } catch (err) {
-      setError('Failed to update task.');
-    }
-  };
-
-  const handleDeleteTask = async (taskId) => {
-    try {
-        await deleteTask(taskId);
-        fetchTasks();
-    } catch (err) {
-        setError('Failed to delete task.');
-    }
-  };
-
-  const handleUpload = async (taskId, file) => {
-    const formData = new FormData();
-    formData.append('attachment', file);
-    try {
-        await uploadAttachment(taskId, formData);
-        fetchTasks();
-    } catch (err) {
-        setError('Failed to upload file.');
-    }
-  };
+  }, [fetchTasks]);
 
   return (
     <div className="p-4 bg-white rounded-lg shadow h-full overflow-y-auto">
@@ -102,7 +74,6 @@ const TasksPage = () => {
       {error && <p className="text-red-500">{error}</p>}
 
       <div className="mb-6">
-        {/* Conditionally render the correct form based on user role */}
         {user.role === 'faculty' ? (
             <CreateAssignmentForm onAssignmentCreated={fetchTasks} />
         ) : (
@@ -111,17 +82,22 @@ const TasksPage = () => {
       </div>
 
       <h2 className="text-xl font-bold mb-4 border-t pt-4">Task List</h2>
-      <div className="space-y-3">
-        {tasks.map((task) => (
-          <TaskItem
-            key={task._id}
-            task={task}
-            onToggle={handleToggleComplete}
-            onDelete={handleDeleteTask}
-            onUpload={handleUpload}
-          />
-        ))}
-      </div>
+
+      {loading && <p>Loading tasks...</p>}
+
+      {!loading && (
+        <div className="space-y-3">
+          {tasks.map((task) => (
+            <TaskItem
+              key={task._id}
+              task={task}
+              onToggle={toggleTaskComplete}
+              onDelete={removeTask}
+              onUpload={uploadTaskAttachment}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

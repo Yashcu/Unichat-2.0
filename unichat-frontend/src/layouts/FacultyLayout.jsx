@@ -1,5 +1,6 @@
 // src/layouts/FacultyLayout.jsx
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Link, useLocation } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 
@@ -13,11 +14,11 @@ const FacultyLayout = ({ children }) => {
     { name: 'Assignments', href: '/assignments' },
     { name: 'Calendar', href: '/calendar' },
     { name: 'Materials', href: '/materials' },
+    { name: 'Grades', href: '/grades' },
   ];
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
-      {/* Sidebar */}
       <div className="w-64 bg-white shadow-lg flex flex-col">
         <div className="flex items-center justify-center h-16 bg-green-600">
           <h1 className="text-xl font-bold text-white">UniChat</h1>
@@ -42,13 +43,15 @@ const FacultyLayout = ({ children }) => {
           <button onClick={logout} className="text-sm text-red-500 hover:underline">Logout</button>
         </div>
       </div>
-
-      {/* Main Content */}
       <div className="flex-1">
         <main className="p-6 h-full">{children}</main>
       </div>
     </div>
   );
+};
+
+FacultyLayout.propTypes = {
+    children: PropTypes.node.isRequired
 };
 
 export default FacultyLayout;

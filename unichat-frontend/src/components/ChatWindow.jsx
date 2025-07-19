@@ -2,7 +2,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useChat } from '../context/ChatProvider';
 import useAuth from '../hooks/useAuth';
-import { summarizeChat } from '../services/ai'; // Import the new AI service
+import { summarizeChat } from '../services/ai';
+import PropTypes from 'prop-types';
 
 const ChatWindow = () => {
   const { messages, sendMessage, activeConversation, loading } = useChat();
@@ -11,7 +12,6 @@ const ChatWindow = () => {
   const [isAnonymous, setIsAnonymous] = useState(false);
   const messagesEndRef = useRef(null);
 
-  // New state for summarization
   const [summary, setSummary] = useState('');
   const [isSummarizing, setIsSummarizing] = useState(false);
   const [summaryError, setSummaryError] = useState('');
@@ -21,8 +21,7 @@ const ChatWindow = () => {
   };
 
   useEffect(scrollToBottom, [messages]);
-  
-  // Clear summary when conversation changes
+
   useEffect(() => {
     setSummary('');
     setSummaryError('');
@@ -43,7 +42,7 @@ const ChatWindow = () => {
     try {
       const response = await summarizeChat(activeConversation);
       setSummary(response.data.summary);
-    } catch (err) {
+    } catch {
       setSummaryError('Failed to get summary.');
     } finally {
       setIsSummarizing(false);
@@ -57,8 +56,8 @@ const ChatWindow = () => {
     <>
       <div className="p-2 border-b flex justify-between items-center">
         <h2 className="text-lg font-semibold">Chat</h2>
-        <button 
-            onClick={handleSummarize} 
+        <button
+            onClick={handleSummarize}
             disabled={isSummarizing}
             className="bg-purple-600 text-white px-4 py-1 rounded-md text-sm disabled:bg-purple-300"
         >
@@ -67,7 +66,6 @@ const ChatWindow = () => {
       </div>
 
       <div className="flex-1 overflow-y-auto p-4">
-        {/* Summary Display */}
         {summary && (
             <div className="p-3 mb-4 bg-purple-50 border border-purple-200 rounded-lg">
                 <p className="font-bold text-purple-800">Conversation Summary:</p>
@@ -75,9 +73,8 @@ const ChatWindow = () => {
             </div>
         )}
         {summaryError && <p className="text-red-500 text-center mb-4">{summaryError}</p>}
-        
+
         {messages.map((msg, idx) => (
-          // ... message mapping code remains the same
           <div key={msg._id || idx} className={`mb-4 flex ${msg.sender._id === user.id ? 'justify-end' : 'justify-start'}`}>
             <div className={`rounded-lg p-3 max-w-lg ${msg.sender._id === user.id ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'}`}>
               <p className="text-sm font-bold">{msg.isAnonymous ? 'Anonymous' : msg.sender.name}</p>
@@ -88,7 +85,6 @@ const ChatWindow = () => {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* ... input bar code remains the same */}
       <div className="p-4 border-t flex items-center">
         <input
           className="flex-1 border rounded-full px-4 py-2 mr-2"
@@ -110,5 +106,7 @@ const ChatWindow = () => {
     </>
   );
 };
+
+ChatWindow.propTypes = {};
 
 export default ChatWindow;

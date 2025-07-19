@@ -12,7 +12,7 @@ exports.getEvents = async (req, res) => {
       ]
     }).populate('createdBy', 'name');
     res.json(events);
-  } catch (err) {
+  } catch {
     res.status(500).json({ message: 'Error fetching events' });
   }
 };
@@ -47,10 +47,10 @@ exports.deleteEvent = async (req, res) => {
         if (event.createdBy.toString() !== req.user.id && req.user.role !== 'admin') {
             return res.status(403).json({ message: 'Not authorized to delete this event' });
         }
-        
+
         await Event.findByIdAndDelete(id);
         res.json({ message: 'Event deleted successfully' });
-    } catch (err) {
+    } catch {
         res.status(500).json({ message: 'Error deleting event' });
     }
 };

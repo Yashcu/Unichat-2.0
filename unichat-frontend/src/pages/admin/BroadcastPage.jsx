@@ -19,7 +19,7 @@ const BroadcastPage = () => {
             setStatus({ message: 'Broadcast sent successfully!', type: 'success' });
             setTitle('');
             setDescription('');
-        } catch (err) {
+        } catch {
             setStatus({ message: 'Failed to send broadcast.', type: 'error' });
         }
     };
@@ -27,7 +27,7 @@ const BroadcastPage = () => {
     return (
         <div className="p-4 bg-white rounded-lg shadow h-full">
             <h1 className="text-2xl font-bold mb-4">Send Broadcast Message</h1>
-            <p className="text-gray-600 mb-6">This message will appear as a global event on every user's calendar.</p>
+            <p className="text-gray-600 mb-6">This message will appear as a global event on every user&apos;s calendar.</p>
 
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>

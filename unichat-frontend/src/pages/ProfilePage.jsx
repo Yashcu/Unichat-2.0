@@ -1,3 +1,4 @@
+// src/pages/ProfilePage.jsx
 import React, { useState } from 'react';
 import useAuth from '../hooks/useAuth';
 import { updateProfile, changePassword } from '../services/user';
@@ -7,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 const ProfilePage = () => {
-    const { user, login } = useAuth(); // We might need to update the user in the context
+    const { user, login } = useAuth();
     const [name, setName] = useState(user.name);
     const [email, setEmail] = useState(user.email);
     const [passwords, setPasswords] = useState({ currentPassword: '', newPassword: '' });
@@ -16,13 +17,11 @@ const ProfilePage = () => {
         e.preventDefault();
         try {
             const response = await updateProfile({ name, email });
-            // Update the user in your AuthContext so changes reflect in UI
             if (response.data && response.data.user) {
                 login(response.data.user);
             }
-            // Optionally, show a simple alert
             alert("Profile updated successfully.");
-        } catch (error) {
+        } catch {
             alert("Failed to update profile.");
         }
     };

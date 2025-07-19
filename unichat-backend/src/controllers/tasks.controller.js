@@ -14,7 +14,7 @@ exports.getTasks = async (req, res) => {
     .select('title description deadline isCompleted attachments type') // Only fetch necessary fields
     .sort({ deadline: 'asc' });
     res.json(tasks);
-  } catch (err) {
+  } catch {
     res.status(500).json({ message: 'Error fetching tasks' });
   }
 };
@@ -78,7 +78,7 @@ exports.deleteTask = async (req, res) => {
 
         await Task.findByIdAndDelete(id);
         res.json({ message: 'Task deleted successfully' });
-    } catch (err) {
+    } catch {
         res.status(500).json({ message: 'Error deleting task' });
     }
 };

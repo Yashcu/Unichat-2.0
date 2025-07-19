@@ -1,6 +1,8 @@
+// src/layouts/StudentLayout.jsx
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Link, useLocation } from 'react-router-dom';
-import Header from '../components/Header'; // Import the new Header
+import Header from '../components/Header';
 
 const StudentLayout = ({ children }) => {
   const location = useLocation();
@@ -11,14 +13,13 @@ const StudentLayout = ({ children }) => {
     { name: 'Tasks', href: '/tasks' },
     { name: 'Calendar', href: '/calendar' },
     { name: 'Materials', href: '/materials' },
+    { name: 'Grades', href: '/grades' },
   ];
 
-  // Dynamically set the header title based on the current page
   const currentPage = navigation.find(item => item.href === location.pathname) || { name: 'UniChat' };
 
   return (
     <div className="min-h-screen bg-gray-100 flex">
-      {/* Sidebar */}
       <aside className="w-64 bg-white shadow-md flex-col hidden md:flex">
         <div className="flex items-center justify-center h-16 bg-blue-600">
           <h1 className="text-xl font-bold text-white">UniChat</h1>
@@ -40,7 +41,6 @@ const StudentLayout = ({ children }) => {
         </nav>
       </aside>
 
-      {/* Main Content Area */}
       <div className="flex-1 flex flex-col">
         <Header title={currentPage.name} />
         <main className="flex-1 p-6 overflow-y-auto">
@@ -49,6 +49,10 @@ const StudentLayout = ({ children }) => {
       </div>
     </div>
   );
+};
+
+StudentLayout.propTypes = {
+    children: PropTypes.node.isRequired
 };
 
 export default StudentLayout;

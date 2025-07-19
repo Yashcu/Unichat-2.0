@@ -3,9 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { getAllUsers, updateUser, deleteUser } from '../../services/admin';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const UserManagementPage = () => {
@@ -20,7 +19,7 @@ const UserManagementPage = () => {
         try {
             const response = await getAllUsers();
             setUsers(response.data);
-        } catch (err) {
+        } catch {
             setError('Failed to fetch users.');
         } finally {
             setLoading(false);
@@ -40,7 +39,7 @@ const UserManagementPage = () => {
         if (window.confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
             try {
                 await deleteUser(userId);
-                fetchUsers(); // Refresh the user list
+                fetchUsers();
             } catch (err) {
                 setError(err.response?.data?.message || 'Failed to delete user.');
             }
@@ -51,7 +50,7 @@ const UserManagementPage = () => {
         try {
             await updateUser(selectedUser._id, { role: selectedUser.role });
             setIsEditModalOpen(false);
-            fetchUsers(); // Refresh the user list
+            fetchUsers();
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to update user.');
         }
@@ -93,7 +92,6 @@ const UserManagementPage = () => {
                 </CardContent>
             </Card>
 
-            {/* Edit User Modal */}
             <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
                 <DialogContent>
                     <DialogHeader>

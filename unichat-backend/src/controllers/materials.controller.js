@@ -1,3 +1,4 @@
+// src/controllers/materials.controller.js
 const Material = require('../models/Material');
 
 // For Faculty: Upload a new course material
@@ -32,7 +33,7 @@ exports.getMaterials = async (req, res) => {
             .populate('uploadedBy', 'name')
             .sort({ createdAt: 'desc' });
         res.json(materials);
-    } catch (err) {
+    } catch {
         res.status(500).json({ message: 'Error fetching materials.' });
     }
 };

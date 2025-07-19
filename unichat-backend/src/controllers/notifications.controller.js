@@ -1,3 +1,4 @@
+// src/controllers/notifications.controller.js
 const Notification = require('../models/Notification');
 
 exports.markAllAsRead = async (req, res) => {
@@ -7,7 +8,7 @@ exports.markAllAsRead = async (req, res) => {
             { $set: { isRead: true } }
         );
         res.status(200).json({ message: 'All notifications marked as read.' });
-    } catch (err) {
+    } catch {
         res.status(500).json({ message: 'Error marking notifications as read.' });
     }
 };
