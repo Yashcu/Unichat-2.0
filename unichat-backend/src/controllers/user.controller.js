@@ -3,6 +3,7 @@ const Task = require('../models/Task');
 const Event = require('../models/Event');
 const User = require('../models/User');
 const Notification = require('../models/Notification');
+const bcrypt = require('bcryptjs');
 
 // Get statistics for the logged-in user's dashboard
 exports.getDashboardStats = async (req, res) => {
@@ -66,5 +67,54 @@ exports.getNotifications = async (req, res) => {
         res.json(notifications);
     } catch (err) {
         res.status(500).json({ message: 'Error fetching notifications' });
+    }
+};
+
+exports.updateProfile = async (req, res) => {
+    try {
+        const { name, email } = req.body;
+        const user = await User.findById(req.user.id);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        user.name = name || user.name;
+        user.email = email || user.email;
+
+        const updatedUser = await user.save();
+        res.json({
+            id: updatedUser._id,
+            name: updatedUser.name,
+            email: updatedUser.email,
+            role: updatedUser.role
+        });
+    } catch (err) {
+        res.status(500).json({ message: 'Error updating profile' });
+    }
+};
+
+exports.changePassword = async (req, res) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+        const user = await User.findById(req.user.id);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Check if the current password is correct
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ message: 'Incorrect current password' });
+        }
+
+        // Hash and save the new password
+        user.password = await bcrypt.hash(newPassword, 10);
+        await user.save();
+
+        res.json({ message: 'Password changed successfully.' });
+    } catch (err) {
+        res.status(500).json({ message: 'Error changing password' });
     }
 };

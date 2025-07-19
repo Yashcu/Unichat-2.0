@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Bell } from 'lucide-react';
+import { Link } from 'react-router-dom'; // Make sure Link is imported
 
 const Header = ({ title }) => {
     const { user, logout } = useAuth();
@@ -13,8 +14,10 @@ const Header = ({ title }) => {
     const [notifications, setNotifications] = useState([]);
 
     useEffect(() => {
-        getNotifications().then(res => setNotifications(res.data)).catch(console.error);
-    }, []);
+        if(user) { // Only fetch notifications if a user is logged in
+            getNotifications().then(res => setNotifications(res.data)).catch(console.error);
+        }
+    }, [user]);
 
     useEffect(() => {
         if (!socket) return;
@@ -28,10 +31,11 @@ const Header = ({ title }) => {
         return () => socket.off('new_notification', handleNewNotification);
     }, [socket]);
 
+    const unreadCount = notifications.filter(n => !n.isRead).length;
+
     const handleOpenChange = (isOpen) => {
         if (isOpen && unreadCount > 0) {
             markAllNotificationsAsRead().then(() => {
-                // Instantly update the UI to reflect the "read" state
                 const readNotifications = notifications.map(n => ({ ...n, isRead: true }));
                 setNotifications(readNotifications);
             }).catch(console.error);
@@ -39,7 +43,6 @@ const Header = ({ title }) => {
     };
 
     const getInitials = (name = '') => name.split(' ').map(n => n[0]).join('').toUpperCase();
-    const unreadCount = notifications.filter(n => !n.isRead).length;
 
     return (
         <header className="bg-white shadow-sm p-4 flex justify-between items-center">
@@ -89,7 +92,14 @@ const Header = ({ title }) => {
                             </div>
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={logout}>Log out</DropdownMenuItem>
+                        {/* Add the Profile link here */}
+                        <DropdownMenuItem asChild>
+                            <Link to="/profile">Profile</Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={logout}>
+                            Log out
+                        </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>

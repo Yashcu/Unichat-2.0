@@ -10,4 +10,8 @@ router.get('/search', isAuthenticated, userController.searchUsers);
 
 router.get('/notifications', isAuthenticated, userController.getNotifications);
 
+router.put('/profile', isAuthenticated, userController.updateProfile);
+
+router.post('/change-password', isAuthenticated, userController.changePassword);
+
 module.exports = router;
