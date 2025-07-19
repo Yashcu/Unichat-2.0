@@ -12,6 +12,7 @@ const FacultyLayout = ({ children }) => {
     { name: 'Chat', href: '/chat' },
     { name: 'Assignments', href: '/assignments' },
     { name: 'Calendar', href: '/calendar' },
+    { name: 'Materials', href: '/materials' },
   ];
 
   return (

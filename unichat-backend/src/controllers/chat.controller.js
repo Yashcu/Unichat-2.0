@@ -36,14 +36,14 @@ exports.sendMessage = async (req, res) => {
         content: content,
         isAnonymous: !!isAnonymous, // Ensure it's a boolean
       });
-      
+
       const savedMessage = await message.save();
-      
+
       const populatedMessage = await savedMessage.populate('sender', 'name role');
 
       // Emit the message to all clients in the room (conversation)
       req.io.to(conversationId).emit('receiveMessage', populatedMessage);
-      
+
       // Respond to the original sender with the populated message
       res.status(201).json(populatedMessage);
 
@@ -54,28 +54,37 @@ exports.sendMessage = async (req, res) => {
 };
 
 exports.createConversation = async (req, res) => {
-    const { participants, name, type } = req.body; // Participants should be an array of User IDs
-  
-    if (!participants || participants.length < 2) {
-      return res.status(400).json({ message: 'A conversation requires at least 2 participants.' });
+    const { participants, name, type } = req.body;
+
+    if (!participants || participants.length === 0) {
+        return res.status(400).json({ message: 'A conversation requires at least one other participant.' });
     }
-  
+
+    // Add the creator to the participants list
+    const allParticipants = [...new Set([...participants, req.user.id.toString()])];
+
     try {
-      // Also include the person creating the chat if they aren't in the list
-      if (!participants.includes(req.user.id)) {
-          participants.push(req.user.id);
-      }
-  
-      const conversation = await Conversation.create({ 
-          participants,
-          name: type === 'group' ? name : null, // Only groups have names
-          type: type || 'one-to-one'
-       });
-      
-      const populatedConversation = await conversation.populate("participants", "name email role");
-  
-      res.status(201).json(populatedConversation);
+        // If it's a one-on-one chat, check if it already exists
+        if (allParticipants.length === 2 && (!type || type === 'one-to-one')) {
+            const existing = await Conversation.findOne({
+                participants: { $all: allParticipants, $size: 2 }
+            });
+            if (existing) {
+                // If it exists, just return the existing conversation
+                const populated = await existing.populate("participants", "name email role");
+                return res.status(200).json(populated);
+            }
+        }
+
+        const conversation = await Conversation.create({
+            participants: allParticipants,
+            name: allParticipants.length > 2 ? name : null, // Only groups have names
+            type: allParticipants.length > 2 ? 'group' : 'one-to-one'
+        });
+
+        const populatedConversation = await conversation.populate("participants", "name email role");
+        res.status(201).json(populatedConversation);
     } catch (err) {
-      res.status(500).json({ message: 'Error creating conversation', error: err.message });
+        res.status(500).json({ message: 'Error creating conversation', error: err.message });
     }
-  };
+};

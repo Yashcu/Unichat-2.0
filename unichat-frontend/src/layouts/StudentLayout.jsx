@@ -1,10 +1,8 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import useAuth from '../hooks/useAuth';
-import Header from '../components/Header';
+import Header from '../components/Header'; // Import the new Header
 
 const StudentLayout = ({ children }) => {
-  const { user } = useAuth();
   const location = useLocation();
 
   const navigation = [
@@ -12,10 +10,15 @@ const StudentLayout = ({ children }) => {
     { name: 'Chat', href: '/chat' },
     { name: 'Tasks', href: '/tasks' },
     { name: 'Calendar', href: '/calendar' },
+    { name: 'Materials', href: '/materials' },
   ];
+
+  // Dynamically set the header title based on the current page
+  const currentPage = navigation.find(item => item.href === location.pathname) || { name: 'UniChat' };
 
   return (
     <div className="min-h-screen bg-gray-100 flex">
+      {/* Sidebar */}
       <aside className="w-64 bg-white shadow-md flex-col hidden md:flex">
         <div className="flex items-center justify-center h-16 bg-blue-600">
           <h1 className="text-xl font-bold text-white">UniChat</h1>
@@ -37,9 +40,12 @@ const StudentLayout = ({ children }) => {
         </nav>
       </aside>
 
+      {/* Main Content Area */}
       <div className="flex-1 flex flex-col">
-        <Header title="Student Portal" />
-        <main className="flex-1 p-6">{children}</main>
+        <Header title={currentPage.name} />
+        <main className="flex-1 p-6 overflow-y-auto">
+            {children}
+        </main>
       </div>
     </div>
   );

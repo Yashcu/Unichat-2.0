@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const routes = require('./routes');
 const errorHandler = require('./middleware/errorHandler');
+const path = require('path');
 
 const app = express();
 
@@ -21,6 +22,8 @@ app.use((req, res, next) => {
     req.io = app.get('io');
     next();
 });
+
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 app.use('/api', routes);
 

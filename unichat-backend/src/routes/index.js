@@ -10,5 +10,7 @@ router.use('/calendar', require('./calendar.routes'));
 router.use('/ai', require('./ai.routes'));
 router.use('/user', require('./user.routes'));
 router.use('/faculty', require('./faculty.routes'));
+router.use('/materials', require('./materials.routes'));
+router.use('/notifications', require('./notifications.routes'));
 
 module.exports = router;
