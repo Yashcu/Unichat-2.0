@@ -1,34 +1,30 @@
-import React, { useEffect, useState } from "react";
-import api from "../services/api";
-import useAuth from "../hooks/useAuth";
-import useChat from "../hooks/useChat";
+// src/components/ChatList.jsx
+import React from 'react';
+import { useChat } from '../context/ChatProvider';
+import useAuth from '../hooks/useAuth';
 
 const ChatList = () => {
-  const { user, token } = useAuth();
-  const { setCurrentRoom, currentRoom } = useChat();
-  const [conversations, setConversations] = useState([]);
+  const { conversations, activeConversation, setActiveConversation } = useChat();
+  const { user } = useAuth();
 
-  useEffect(() => {
-    const fetchConversations = async () => {
-      const res = await api.get("/chat/conversations", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setConversations(res.data);
-    };
-    if (token) fetchConversations();
-  }, [token]);
+  const getConversationName = (convo) => {
+    if (convo.name) return convo.name; // For group chats
+    // For one-on-one chats, find the other participant's name
+    const otherParticipant = convo.participants.find(p => p._id !== user.id);
+    return otherParticipant ? otherParticipant.name : 'Unknown Chat';
+  };
 
   return (
-    <div className="w-64 bg-white border-r h-full">
-      <h2 className="p-4 font-bold">Chats</h2>
+    <div className="w-1/4 bg-gray-100 border-r h-full">
+      <h2 className="p-4 font-bold text-lg">Chats</h2>
       <ul>
-        {conversations.map((conv) => (
+        {conversations.map((convo) => (
           <li
-            key={conv._id}
-            className={`p-2 hover:bg-gray-100 cursor-pointer ${currentRoom === conv._id ? "bg-blue-100" : ""}`}
-            onClick={() => setCurrentRoom(conv._id)}
+            key={convo._id}
+            className={`p-3 hover:bg-gray-200 cursor-pointer ${activeConversation === convo._id ? "bg-blue-100" : ""}`}
+            onClick={() => setActiveConversation(convo._id)}
           >
-            {conv.name || conv.participants.filter(p => p._id !== user.id).map(p => p.name).join(", ")}
+            {getConversationName(convo)}
           </li>
         ))}
       </ul>

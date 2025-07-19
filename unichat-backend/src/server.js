@@ -12,20 +12,15 @@ const io = new Server(server, {
   cors: { origin: "*" }
 });
 
-// We are exporting 'io' so it can be used in app.js
-module.exports.io = io;
+// Attach the io instance to the app object
+app.set('io', io);
 
 io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
 
   socket.on('joinRoom', (roomId) => {
-    console.log('Socket', socket.id, 'joining room', roomId);
+    console.log(`--- SOCKET [${socket.id}] is joining room [${roomId}] ---`);
     socket.join(roomId);
-  });
-
-  socket.on('sendMessage', (data) => {
-    console.log("Emitting to room:", data.roomId, "Message:", data.message);
-    io.to(data.roomId).emit('receiveMessage', data.message);
   });
 
   socket.on('disconnect', () => {

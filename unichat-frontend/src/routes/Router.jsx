@@ -1,106 +1,92 @@
 // src/routes/Router.jsx
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Login from "../pages/auth/Login";
-import Signup from "../pages/auth/Signup";
-import AuthCallback from "../pages/auth/AuthCallback";
 import useAuth from "../hooks/useAuth";
-import StudentDashboard from "../pages/student/dashboard";
-import FacultyDashboard from "../pages/faculty/dashboard";
-import AdminDashboard from "../pages/admin/dashboard";
+
+// Import Layouts
 import StudentLayout from "../layouts/StudentLayout";
 import FacultyLayout from "../layouts/FacultyLayout";
 import AdminLayout from "../layouts/AdminLayout";
-import StudentChatPage from "../pages/student/Chat";
-import FacultyChatPage from "../pages/faculty/Chat";
-import AdminChatPage from "../pages/admin/Chat";
 
+// Import Main Pages
+import ChatPage from '../pages/ChatPage';
+import TasksPage from '../pages/TasksPage';
+import CalendarPage from '../pages/CalendarPage';
+
+// Import Dashboard Pages
+import StudentDashboard from '../pages/student/dashboard'; // The dynamic student dashboard
+const FacultyDashboard = () => <div>Faculty Dashboard</div>; // Placeholder for now
+const AdminDashboard = () => <div>Admin Dashboard</div>; // Placeholder for now
+
+// Import Admin Pages
+import UserManagementPage from "../pages/admin/UserManagementPage";
+import SystemLogsPage from '../pages/admin/SystemLogsPage';
+import BroadcastPage from '../pages/admin/BroadcastPage';
+
+// Import Auth Pages
+import Login from "../pages/auth/Login";
+
+// A component to protect routes that require a user to be logged in
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
-
   if (loading) {
     return <div>Loading...</div>;
   }
-
-  if (!user) {
-    return <Navigate to="/auth/login" />;
-  }
-
-  return children;
+  return user ? children : <Navigate to="/auth/login" />;
 };
 
-const RoleBasedLayout = () => {
+// This component wraps a page with the correct layout based on user role
+const RoleBasedLayout = ({ children }) => {
   const { user } = useAuth();
+  if (!user) return <Navigate to="/auth/login" />;
 
-  if (!user) {
-    return <Navigate to="/auth/login" />;
-  }
-  
   switch (user.role) {
-    case "student":
-      return <StudentLayout><StudentDashboard /></StudentLayout>;
-    case "faculty":
-      return <FacultyLayout><FacultyDashboard /></FacultyLayout>;
-    case "admin":
-      return <AdminLayout><AdminDashboard /></AdminLayout>;
-    default:
-      return <div>Unknown role</div>;
+    case "student": return <StudentLayout>{children}</StudentLayout>;
+    case "faculty": return <FacultyLayout>{children}</FacultyLayout>;
+    case "admin": return <AdminLayout>{children}</AdminLayout>;
+    default: return <div>Unknown role. Please contact support.</div>;
   }
 };
 
-const RoleBasedChatLayout = () => {
+// This component selects the correct dashboard for the user
+const DashboardSelector = () => {
     const { user } = useAuth();
-  
-    if (!user) {
-      return <Navigate to="/auth/login" />;
-    }
-  
+    if (!user) return <Navigate to="/auth/login" />;
+
     switch (user.role) {
-      case "student":
-        return <StudentLayout><StudentChatPage /></StudentLayout>;
-      case "faculty":
-        return <FacultyLayout><FacultyChatPage /></FacultyLayout>;
-      case "admin":
-        return <AdminLayout><AdminChatPage /></AdminLayout>;
-      default:
-        return <div>Unknown role</div>;
+      case "student": return <StudentDashboard />;
+      case "faculty": return <FacultyDashboard />;
+      case "admin": return <AdminDashboard />;
+      default: return <div>Unknown role.</div>;
     }
-  };
+};
 
 function Router() {
-  const { loading } = useAuth();
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  const { user, loading } = useAuth();
+  if (loading) return <div>Loading...</div>;
 
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/auth/login" element={<Login />} />
-        <Route path="/auth/signup" element={<Signup />} />
-        <Route path="/auth/callback" element={<AuthCallback />} />
-        
-        <Route 
-          path="/" 
-          element={
-            <ProtectedRoute>
-              <RoleBasedLayout />
-            </ProtectedRoute>
-          } 
-        />
-        <Route 
-          path="/chat" 
-          element={
-            <ProtectedRoute>
-              <RoleBasedChatLayout />
-            </ProtectedRoute>
-          } 
-        />
-        {/* Add more protected routes for each role as needed */}
+        {/* Auth Route */}
+        <Route path="/auth/login" element={user ? <Navigate to="/" /> : <Login />} />
+
+        {/* Main Routes */}
+        <Route path="/" element={<ProtectedRoute><RoleBasedLayout><DashboardSelector /></RoleBasedLayout></ProtectedRoute>} />
+        <Route path="/chat" element={<ProtectedRoute><RoleBasedLayout><ChatPage /></RoleBasedLayout></ProtectedRoute>} />
+        <Route path="/tasks" element={<ProtectedRoute><RoleBasedLayout><TasksPage /></RoleBasedLayout></ProtectedRoute>} />
+        <Route path="/calendar" element={<ProtectedRoute><RoleBasedLayout><CalendarPage /></RoleBasedLayout></ProtectedRoute>} />
+
+        {/* Admin Routes */}
+        <Route path="/admin/users" element={<ProtectedRoute><RoleBasedLayout><UserManagementPage /></RoleBasedLayout></ProtectedRoute>} />
+        <Route path="/admin/logs" element={<ProtectedRoute><RoleBasedLayout><SystemLogsPage /></RoleBasedLayout></ProtectedRoute>} />
+        <Route path="/admin/broadcast" element={<ProtectedRoute><RoleBasedLayout><BroadcastPage /></RoleBasedLayout></ProtectedRoute>} />
+
+        {/* Fallback Route */}
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </BrowserRouter>
   );
-};
+}
 
 export default Router;

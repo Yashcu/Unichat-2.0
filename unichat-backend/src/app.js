@@ -8,10 +8,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Middleware to attach io to each request
-const { io } = require('./server'); // Import io from server.js
+// This is where we will attach the io object later
 app.use((req, res, next) => {
-    req.io = io;
+    req.io = app.get('io');
     next();
 });
 

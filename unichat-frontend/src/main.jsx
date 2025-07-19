@@ -2,13 +2,12 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import { AuthProvider } from "./context/AuthProvider";
-import Router from "./routes/Router";
+import App from "./App"; // Import the new App component
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <AuthProvider>
-      <Router />
-    </AuthProvider>
+    <App />
   </React.StrictMode>
 );
+
+export default App;

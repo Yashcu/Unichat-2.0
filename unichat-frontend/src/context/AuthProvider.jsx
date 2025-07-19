@@ -1,6 +1,6 @@
 // src/context/AuthProvider.jsx
 import React, { createContext, useState, useEffect } from "react";
-import { getProfile } from "../services/auth";
+import api from "../services/api"; // We need to use the api service here
 
 export const AuthContext = createContext();
 
@@ -10,13 +10,15 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log("AuthProvider rendered", { user, token, loading });
     const fetchProfile = async () => {
       if (token) {
         try {
-          const res = await getProfile(token);
+          // Set the authorization header for all future api requests
+          api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+          const res = await api.get("/auth/me"); // This endpoint needs to exist
           setUser(res.data);
         } catch {
+          // If the token is invalid, clear it
           setUser(null);
           setToken(null);
           localStorage.removeItem("token");
@@ -37,6 +39,8 @@ export const AuthProvider = ({ children }) => {
     setToken(null);
     setUser(null);
     localStorage.removeItem("token");
+    // Remove the authorization header
+    delete api.defaults.headers.common['Authorization'];
   };
 
   return (
