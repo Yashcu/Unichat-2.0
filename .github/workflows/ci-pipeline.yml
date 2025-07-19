@@ -1,0 +1,85 @@
+# .github/workflows/ci-pipeline.yml
+
+name: UniChat CI Pipeline
+
+# Controls when the workflow will run
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  # Job for the backend
+  backend-ci:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    defaults:
+      run:
+        working-directory: ./unichat-backend
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+          cache-dependency-path: ./unichat-backend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint code (if lint script exists)
+        run: |
+          if [ -f package.json ] && [ "$(jq .scripts.lint package.json)" != "null" ]; then
+            npm run lint
+          else
+            echo "No lint script found in backend, skipping."
+          fi
+
+      - name: Build project (if build script exists)
+        run: |
+          if [ -f package.json ] && [ "$(jq .scripts.build package.json)" != "null" ]; then
+            npm run build --if-present
+          else
+            echo "No build script found in backend, skipping."
+          fi
+
+  # Job for the frontend
+  frontend-ci:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    defaults:
+      run:
+        working-directory: ./unichat-frontend
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+          cache-dependency-path: ./unichat-frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint code
+        run: npm run lint
+
+      - name: Build project
+        run: npm run build --if-present
