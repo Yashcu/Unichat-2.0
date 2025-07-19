@@ -1,10 +1,12 @@
 // src/context/ChatProvider.jsx
-import React, { createContext, useState, useEffect } from 'react';
-import { useSocket } from './SocketProvider';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { useSocket } from './SocketProvider';
 import api from '../services/api';
 
 export const ChatContext = createContext();
+
+export const useChat = () => useContext(ChatContext);
 
 export const ChatProvider = ({ children }) => {
   const socket = useSocket();
@@ -22,8 +24,10 @@ export const ChatProvider = ({ children }) => {
           console.error('Error loading conversations:', error);
         }
     };
-    loadConversations();
-  }, []);
+    if (socket) {
+        loadConversations();
+    }
+  }, [socket]);
 
   useEffect(() => {
     if (!socket) return;
@@ -75,6 +79,7 @@ export const ChatProvider = ({ children }) => {
     messages,
     loading,
     sendMessage,
+    socket
   };
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;

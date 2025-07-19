@@ -1,0 +1,1 @@
+import{e as s}from"./index-B1mjx8Bh.js";const d=()=>s.get("/admin/users"),o=()=>s.get("/admin/logs"),n=a=>s.post("/admin/broadcast",a),r=()=>s.get("/admin/dashboard"),m=(a,t)=>s.put(`/admin/users/${a}`,t),g=a=>s.delete(`/admin/users/${a}`);export{d as a,o as b,g as d,r as g,n as s,m as u};

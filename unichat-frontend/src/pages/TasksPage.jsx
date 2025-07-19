@@ -1,7 +1,7 @@
 // src/pages/TasksPage.jsx
 import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { useTaskStore } from '../store/useTaskStore';
+import { useTaskStore } from '@/store/useTaskStore.js';
 import CreateTaskForm from '../components/CreateTaskForm';
 import CreateAssignmentForm from '../components/CreateAssignmentForm';
 import useAuth from '../hooks/useAuth';

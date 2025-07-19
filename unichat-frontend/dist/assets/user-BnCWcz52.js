@@ -1,0 +1,1 @@
+import{e as a}from"./index-B1mjx8Bh.js";const r=()=>a.get("/user/dashboard"),o=s=>a.get(`/user/search?search=${s}`),t=s=>a.put("/user/profile",s),c=s=>a.post("/user/change-password",s);export{c,r as g,o as s,t as u};
