@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node src/server.js",
-    "dev": "nodemon src/server.js",
-    "test": "jest --runInBand --detectOpenHandles"
-  },
+  "start": "node src/server.js",
+  "dev": "nodemon src/server.js",
+  "test": "jest --runInBand --detectOpenHandles",
+  "lint": "eslint . --ext .js",
+  "build": "echo \"No build step required for backend\" && exit 0"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",

@@ -2,7 +2,6 @@
 
 name: UniChat CI Pipeline
 
-# Controls when the workflow will run
 on:
   push:
     branches: ["main"]
@@ -36,21 +35,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Lint code (if lint script exists)
-        run: |
-          if [ -f package.json ] && [ "$(jq .scripts.lint package.json)" != "null" ]; then
-            npm run lint
-          else
-            echo "No lint script found in backend, skipping."
-          fi
+      - name: Lint code
+        run: npm run lint
 
-      - name: Build project (if build script exists)
-        run: |
-          if [ -f package.json ] && [ "$(jq .scripts.build package.json)" != "null" ]; then
-            npm run build --if-present
-          else
-            echo "No build script found in backend, skipping."
-          fi
+      - name: Run tests
+        run: npm test
+
+      - name: Build project
+        run: npm run build --if-present
 
   # Job for the frontend
   frontend-ci:
