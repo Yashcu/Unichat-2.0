@@ -93,3 +93,25 @@ exports.sendBroadcast = async (req, res) => {
     }
 };
 
+exports.getDashboardStats = async (req, res) => {
+    try {
+        // Run queries in parallel for performance
+        const [totalUsers, totalStudents, totalFaculty, totalEvents, recentLogs] = await Promise.all([
+            User.countDocuments(),
+            User.countDocuments({ role: 'student' }),
+            User.countDocuments({ role: 'faculty' }),
+            Event.countDocuments(),
+            Log.countDocuments({ createdAt: { $gte: new Date(Date.now() - 24*60*60*1000) } }) // Logs in last 24 hours
+        ]);
+
+        res.json({
+            totalUsers,
+            totalStudents,
+            totalFaculty,
+            totalEvents,
+            recentLogs
+        });
+    } catch (err) {
+        res.status(500).json({ message: 'Error fetching admin dashboard stats' });
+    }
+};

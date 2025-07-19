@@ -14,9 +14,9 @@ import TasksPage from '../pages/TasksPage';
 import CalendarPage from '../pages/CalendarPage';
 
 // Import Dashboard Pages
-import StudentDashboard from '../pages/student/dashboard'; // The dynamic student dashboard
-const FacultyDashboard = () => <div>Faculty Dashboard</div>; // Placeholder for now
-const AdminDashboard = () => <div>Admin Dashboard</div>; // Placeholder for now
+import StudentDashboard from '../pages/student/dashboard';
+import AdminDashboard from '../pages/admin/dashboard';
+import FacultyDashboard from '../pages/faculty/dashboard';
 
 // Import Admin Pages
 import UserManagementPage from "../pages/admin/UserManagementPage";

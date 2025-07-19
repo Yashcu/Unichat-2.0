@@ -1,12 +1,56 @@
 // src/pages/TasksPage.jsx
-import React, { useState, useEffect } from 'react';
-import { getTasks, createTask, updateTask, deleteTask } from '../services/tasks';
+import React, { useState, useEffect, useRef } from 'react';
+import { getTasks, updateTask, deleteTask, uploadAttachment } from '../services/tasks';
+import CreateTaskForm from '../components/CreateTaskForm';
+import CreateAssignmentForm from '../components/CreateAssignmentForm'; // Import the new form
+import useAuth from '../hooks/useAuth'; // Import useAuth to check role
+
+// ... (TaskItem component remains the same)
+const TaskItem = ({ task, onToggle, onDelete, onUpload }) => {
+    const fileInputRef = useRef(null);
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            onUpload(task._id, file);
+        }
+    };
+
+    return (
+        <div className={`p-3 rounded-md ${task.isCompleted ? 'bg-gray-100 text-gray-500' : 'bg-white border'}`}>
+            <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                    <input type="checkbox" checked={task.isCompleted} onChange={() => onToggle(task)} className="mr-3 h-5 w-5" />
+                    <div>
+                        <span className={task.isCompleted ? 'line-through' : ''}>{task.title}</span>
+                        {task.type === 'assignment' && <span className="text-xs bg-green-100 text-green-800 rounded-full px-2 py-1 ml-2">Assignment</span>}
+                    </div>
+                </div>
+                <div>
+                    <button onClick={() => fileInputRef.current.click()} className="text-sm text-blue-500 hover:underline mr-4">Upload File</button>
+                    <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" />
+                    <button onClick={() => onDelete(task._id)} className="text-red-500 hover:text-red-700">Delete</button>
+                </div>
+            </div>
+            {task.attachments && task.attachments.length > 0 && (
+                <div className="mt-2 pl-8 text-sm">
+                    <p className="font-semibold">Attachments:</p>
+                    <ul className="list-disc list-inside">
+                        {task.attachments.map((file, index) => <li key={index}>{file.replace('uploads\\', '')}</li>)}
+                    </ul>
+                </div>
+            )}
+        </div>
+    );
+};
+
 
 const TasksPage = () => {
   const [tasks, setTasks] = useState([]);
-  const [title, setTitle] = useState('');
   const [error, setError] = useState('');
+  const { user } = useAuth(); // Get the user's role
 
+  // ... (fetchTasks, handleToggleComplete, handleDeleteTask, handleUpload functions are the same)
   const fetchTasks = async () => {
     try {
       const response = await getTasks();
@@ -20,22 +64,10 @@ const TasksPage = () => {
     fetchTasks();
   }, []);
 
-  const handleCreateTask = async (e) => {
-    e.preventDefault();
-    if (!title.trim()) return;
-    try {
-      await createTask({ title });
-      setTitle('');
-      fetchTasks(); // Refetch tasks to show the new one
-    } catch (err) {
-      setError('Failed to create task.');
-    }
-  };
-
   const handleToggleComplete = async (task) => {
     try {
       await updateTask(task._id, { isCompleted: !task.isCompleted });
-      fetchTasks(); // Refetch to show the change
+      fetchTasks();
     } catch (err) {
       setError('Failed to update task.');
     }
@@ -44,48 +76,50 @@ const TasksPage = () => {
   const handleDeleteTask = async (taskId) => {
     try {
         await deleteTask(taskId);
-        fetchTasks(); // Refetch to remove the task from the list
+        fetchTasks();
     } catch (err) {
         setError('Failed to delete task.');
     }
   };
 
-  return (
-    <div className="p-4 bg-white rounded-lg shadow h-full">
-      <h1 className="text-2xl font-bold mb-4">My Tasks</h1>
-      {error && <p className="text-red-500">{error}</p>}
-      
-      {/* Create Task Form */}
-      <form onSubmit={handleCreateTask} className="flex mb-6">
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="Add a new task..."
-          className="flex-grow border rounded-l-md p-2"
-        />
-        <button type="submit" className="bg-blue-600 text-white px-4 rounded-r-md">Add Task</button>
-      </form>
+  const handleUpload = async (taskId, file) => {
+    const formData = new FormData();
+    formData.append('attachment', file);
+    try {
+        await uploadAttachment(taskId, formData);
+        fetchTasks();
+    } catch (err) {
+        setError('Failed to upload file.');
+    }
+  };
 
-      {/* Task List */}
+  return (
+    <div className="p-4 bg-white rounded-lg shadow h-full overflow-y-auto">
+      <h1 className="text-2xl font-bold mb-4">
+        {user.role === 'faculty' ? 'My Tasks & Assignments' : 'My Tasks'}
+      </h1>
+
+      {error && <p className="text-red-500">{error}</p>}
+
+      <div className="mb-6">
+        {/* Conditionally render the correct form based on user role */}
+        {user.role === 'faculty' ? (
+            <CreateAssignmentForm onAssignmentCreated={fetchTasks} />
+        ) : (
+            <CreateTaskForm onTaskCreated={fetchTasks} />
+        )}
+      </div>
+
+      <h2 className="text-xl font-bold mb-4 border-t pt-4">Task List</h2>
       <div className="space-y-3">
         {tasks.map((task) => (
-          <div key={task._id} className={`flex items-center justify-between p-3 rounded-md ${task.isCompleted ? 'bg-gray-100 text-gray-500' : 'bg-white'}`}>
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                checked={task.isCompleted}
-                onChange={() => handleToggleComplete(task)}
-                className="mr-3 h-5 w-5"
-              />
-              <span className={task.isCompleted ? 'line-through' : ''}>
-                {task.title}
-              </span>
-            </div>
-            <button onClick={() => handleDeleteTask(task._id)} className="text-red-500 hover:text-red-700">
-                Delete
-            </button>
-          </div>
+          <TaskItem
+            key={task._id}
+            task={task}
+            onToggle={handleToggleComplete}
+            onDelete={handleDeleteTask}
+            onUpload={handleUpload}
+          />
         ))}
       </div>
     </div>

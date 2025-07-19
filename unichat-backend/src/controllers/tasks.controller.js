@@ -72,10 +72,32 @@ exports.deleteTask = async (req, res) => {
         if (task.createdBy.toString() !== req.user.id) {
             return res.status(403).json({ message: 'Not authorized to delete this task' });
         }
-        
+
         await Task.findByIdAndDelete(id);
         res.json({ message: 'Task deleted successfully' });
     } catch (err) {
         res.status(500).json({ message: 'Error deleting task' });
+    }
+};
+
+exports.uploadAttachment = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const task = await Task.findById(id);
+
+        if (!task) {
+            return res.status(404).json({ message: 'Task not found' });
+        }
+        if (!req.file) {
+            return res.status(400).json({ message: 'No file uploaded' });
+        }
+
+        // Add the path of the uploaded file to the task's attachments
+        task.attachments.push(req.file.path);
+        await task.save();
+
+        res.json({ message: 'File uploaded successfully', task });
+    } catch (err) {
+        res.status(500).json({ message: 'Error uploading file', error: err.message });
     }
 };

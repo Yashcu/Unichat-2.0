@@ -9,5 +9,6 @@ router.use('/tasks', require('./tasks.routes'));
 router.use('/calendar', require('./calendar.routes'));
 router.use('/ai', require('./ai.routes'));
 router.use('/user', require('./user.routes'));
+router.use('/faculty', require('./faculty.routes'));
 
 module.exports = router;
