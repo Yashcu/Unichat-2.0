@@ -1,10 +1,11 @@
 // src/components/ChatList.jsx
 import React, { useState } from 'react';
-import { useChat } from '../context/SocketProvider';
+import { useChat } from '../context/ChatProvider'; // Corrected import path
 import useAuth from '../hooks/useAuth';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from './ui/button';
 import NewChatModal from './NewChatModal';
+import PropTypes from 'prop-types';
 
 const ChatList = () => {
   const { conversations, activeConversation, setActiveConversation } = useChat();
@@ -51,6 +52,10 @@ const ChatList = () => {
       </ul>
     </div>
   );
+};
+
+ChatList.propTypes = {
+    // No props to validate for this component
 };
 
 export default ChatList;
