@@ -41,10 +41,58 @@ exports.createUser = async (req, res) => {
 
 exports.getAllUsers = async (req, res) => {
     try {
-        const users = await User.find().select('-password').sort({ createdAt: 'desc' });
+        const users = await User.find()
+            .select('name email role createdAt') // Only fetch necessary fields for the list view
+            .sort({ createdAt: 'desc' });
         res.json(users);
     } catch (err) {
         res.status(500).json({ message: 'Error fetching users' });
+    }
+};
+
+exports.updateUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, email, role, isBlocked } = req.body;
+
+        // Prevent admin from accidentally changing their own role or blocking themselves
+        if (id === req.user.id && (role !== 'admin' || isBlocked)) {
+            return res.status(400).json({ message: "Admins cannot change their own role or block themselves." });
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(id,
+            { name, email, role, isBlocked },
+            { new: true } // Return the updated document
+        ).select('-password');
+
+        if (!updatedUser) return res.status(404).json({ message: 'User not found' });
+
+        await Log.create({ user: req.user.id, action: 'admin_update_user', resourceId: updatedUser._id, details: `Updated user ${updatedUser.name}` });
+
+        res.json(updatedUser);
+    } catch (err) {
+        res.status(500).json({ message: 'Error updating user' });
+    }
+};
+
+exports.deleteUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Prevent admin from deleting themselves
+        if (id === req.user.id) {
+            return res.status(400).json({ message: "Admins cannot delete their own account." });
+        }
+
+        const deletedUser = await User.findByIdAndDelete(id);
+
+        if (!deletedUser) return res.status(404).json({ message: 'User not found' });
+
+        await Log.create({ user: req.user.id, action: 'admin_delete_user', resourceId: id, details: `Deleted user ${deletedUser.name}` });
+
+        res.json({ message: 'User deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ message: 'Error deleting user' });
     }
 };
 

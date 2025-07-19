@@ -2,6 +2,7 @@
 const Task = require('../models/Task');
 const Event = require('../models/Event');
 const User = require('../models/User');
+const { createNotification } = require('../services/notification.service');
 
 // Get statistics for the logged-in faculty member's dashboard
 exports.getDashboardStats = async (req, res) => {
@@ -57,6 +58,14 @@ exports.createAssignment = async (req, res) => {
         });
 
         await assignment.save();
+
+        const message = `You have been assigned a new task: "${title}"`;
+        const link = `/tasks`;
+        assignedTo.forEach(studentId => {
+            createNotification(studentId, message, link);
+        });
+
+
         res.status(201).json(assignment);
     } catch (err) {
         res.status(400).json({ message: 'Error creating assignment', error: err.message });

@@ -1,10 +1,12 @@
-// src/components/CreateTaskForm.jsx
 import React, { useState } from 'react';
 import { createTask } from '../services/tasks';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
 
 const CreateTaskForm = ({ onTaskCreated }) => {
     const [title, setTitle] = useState('');
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -13,30 +15,32 @@ const CreateTaskForm = ({ onTaskCreated }) => {
             setError('Task title cannot be empty.');
             return;
         }
+        setLoading(true);
         try {
             await createTask({ title });
             setTitle('');
             if (onTaskCreated) {
-                onTaskCreated(); // Notify parent component that a task was created
+                onTaskCreated();
             }
         } catch (err) {
             setError('Failed to create task.');
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-        <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
             {error && <p className="text-red-500 text-sm">{error}</p>}
-            <input
+            <Input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="What do you need to do?"
-                className="border rounded-md p-2 w-full"
             />
-            <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded-md self-end">
-                Add Task
-            </button>
+            <Button type="submit" disabled={loading}>
+                {loading ? 'Adding Task...' : 'Add Task'}
+            </Button>
         </form>
     );
 };

@@ -23,10 +23,16 @@ const io = new Server(server, {
 app.set('io', io);
 
 io.on('connection', (socket) => {
-  console.log('User connected:', socket.id);
+  const userId = socket.handshake.auth.userId;
+  if (userId) {
+      console.log(`User ${userId} connected with socket ${socket.id}`);
+      socket.join(userId.toString());
+  }
+
   socket.on('joinRoom', (roomId) => {
     socket.join(roomId);
   });
+
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
   });

@@ -18,7 +18,7 @@ export const ChatProvider = ({ children }) => {
   useEffect(() => {
     if (token && user) {
       const newSocket = io(import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000', {
-        auth: { token }
+        auth: { token, userId: user.id }
       });
       socketRef.current = newSocket;
 
@@ -50,7 +50,7 @@ export const ChatProvider = ({ children }) => {
   useEffect(() => {
     const socket = socketRef.current;
     if (!socket) return;
-    
+
     const handleReceiveMessage = (message) => {
       if (message.conversation === activeConversation) {
         setMessages((prev) => [...prev, message]);

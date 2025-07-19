@@ -9,7 +9,10 @@ exports.getTasks = async (req, res) => {
         { createdBy: req.user.id },
         { assignedTo: req.user.id }
       ]
-    }).populate('createdBy', 'name').sort({ deadline: 'asc' });
+    })
+    .populate('createdBy', 'name')
+    .select('title description deadline isCompleted attachments type') // Only fetch necessary fields
+    .sort({ deadline: 'asc' });
     res.json(tasks);
   } catch (err) {
     res.status(500).json({ message: 'Error fetching tasks' });
