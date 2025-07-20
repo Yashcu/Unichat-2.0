@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>UniChat Campus Connect</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+  <div class="flex h-screen">
+
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white border-r p-4 flex flex-col">
+      <h1 class="text-xl font-bold mb-6">UniChat<br><span class="text-sm font-medium text-gray-400">Campus Connect</span></h1>
+      <nav class="flex-1 space-y-2 text-sm font-medium">
+        <a href="#" class="flex justify-between items-center p-2 rounded hover:bg-gray-100 bg-gray-100">
+          <span>Dashboard</span>
+        </a>
+        <a href="#" class="flex justify-between items-center p-2 rounded hover:bg-gray-100">
+          <span>Messages</span>
+          <span class="bg-gray-200 text-xs rounded-full px-2">5</span>
+        </a>
+        <a href="#" class="flex justify-between items-center p-2 rounded hover:bg-gray-100">
+          <span>Calendar</span>
+        </a>
+        <a href="#" class="flex justify-between items-center p-2 rounded hover:bg-gray-100">
+          <span>Courses</span>
+        </a>
+        <a href="#" class="flex justify-between items-center p-2 rounded hover:bg-gray-100">
+          <span>Tasks</span>
+          <span class="bg-gray-200 text-xs rounded-full px-2">3</span>
+        </a>
+        <a href="#" class="flex justify-between items-center p-2 rounded hover:bg-gray-100">
+          <span>AI Assistant</span>
+        </a>
+        <a href="#" class="flex justify-between items-center p-2 rounded hover:bg-gray-100">
+          <span>Files</span>
+        </a>
+        <a href="#" class="flex justify-between items-center p-2 rounded hover:bg-gray-100">
+          <span>Announcements</span>
+          <span class="bg-gray-200 text-xs rounded-full px-2">2</span>
+        </a>
+        <a href="#" class="flex justify-between items-center p-2 rounded hover:bg-gray-100">
+          <span>Settings</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6 overflow-y-auto">
+
+      <!-- Topbar -->
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-semibold">Dashboard</h2>
+        <div class="flex items-center gap-4">
+          <input type="text" placeholder="Search..." class="px-3 py-1.5 rounded border text-sm" />
+          <div class="relative">
+            <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">3</span>
+            <button class="text-xl">🔔</button>
+          </div>
+          <div class="w-8 h-8 rounded-full bg-gray-300"></div>
+        </div>
+      </div>
+
+      <!-- Grid Layout -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- Schedule -->
+        <div class="bg-white rounded-lg shadow p-4 col-span-1">
+          <h3 class="text-lg font-semibold mb-2">Today's Schedule</h3>
+          <ul class="text-sm space-y-2">
+            <li class="flex justify-between">
+              <span>Algorithms</span>
+              <span class="text-xs text-gray-500">11:00 AM · Room 301</span>
+            </li>
+            <li class="flex justify-between">
+              <span>Database Systems <span class="text-blue-500 font-medium">Open Task</span></span>
+              <span class="text-xs text-gray-500">2:00 PM · Room 205</span>
+            </li>
+            <li class="flex justify-between">
+              <span>Study Group</span>
+              <span class="text-xs text-gray-500">4:00 PM · Library</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Tasks -->
+        <div class="bg-white rounded-lg shadow p-4 col-span-1">
+          <div class="flex justify-between items-center mb-2">
+            <h3 class="text-lg font-semibold">My Tasks</h3>
+            <button class="text-sm px-2 py-1 bg-blue-100 rounded">+ Add</button>
+          </div>
+          <div class="text-xs mb-2 text-gray-500">Progress: 3/6</div>
+          <div class="space-y-2 text-sm">
+            <div class="bg-red-100 p-2 rounded">Algorithm Assignment — <span class="text-red-600 font-semibold">Due today</span></div>
+            <div class="bg-yellow-100 p-2 rounded">Database Project — <span class="text-yellow-600 font-semibold">Due today</span></div>
+            <div class="bg-gray-100 p-2 rounded">Read Chapter 7 — Tomorrow</div>
+          </div>
+        </div>
+
+        <!-- Messages -->
+        <div class="bg-white rounded-lg shadow p-4 col-span-1">
+          <h3 class="text-lg font-semibold mb-2">Messages</h3>
+          <div class="space-y-2 text-sm">
+            <div class="bg-gray-100 p-2 rounded">
+              <strong>Prof. Johnson</strong><br />
+              Assignment deadline extended <span class="text-xs text-gray-500">2m ago</span>
+            </div>
+            <div class="bg-gray-100 p-2 rounded">
+              <strong>Study Group</strong><br />
+              Meeting moved to Library C <span class="text-xs text-gray-500">15m ago</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Announcements -->
+        <div class="bg-white rounded-lg shadow p-4 col-span-1">
+          <h3 class="text-lg font-semibold mb-2">Announcements</h3>
+          <div class="space-y-2 text-sm">
+            <div class="bg-blue-50 p-2 rounded flex justify-between">
+              <span>Spring Break Schedule</span>
+              <span class="text-xs text-blue-600 font-medium">NEW</span>
+            </div>
+            <div class="bg-green-50 p-2 rounded flex justify-between">
+              <span>Course Registration</span>
+              <span class="text-xs text-green-600 font-medium">NEW</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Access -->
+        <div class="bg-white rounded-lg shadow p-4 col-span-1">
+          <h3 class="text-lg font-semibold mb-2">Quick Access</h3>
+          <div class="grid grid-cols-2 gap-2 text-sm">
+            <button class="border p-2 rounded hover:bg-gray-100">AI Assistant</button>
+            <button class="border p-2 rounded hover:bg-gray-100">Add Event</button>
+            <button class="border p-2 rounded hover:bg-gray-100">Upload File</button>
+            <button class="border p-2 rounded hover:bg-gray-100">New Chat</button>
+          </div>
+        </div>
+
+        <!-- AI Insights -->
+        <div class="bg-white rounded-lg shadow p-4 col-span-2">
+          <h3 class="text-lg font-semibold mb-2">AI Insights</h3>
+          <div class="flex flex-wrap gap-2 text-sm">
+            <span class="bg-gray-100 px-2 py-1 rounded">Week: 8/12 tasks completed</span>
+            <span class="bg-yellow-100 px-2 py-1 rounded">Reminder: CS101 chat (3 new)</span>
+            <span class="bg-green-100 px-2 py-1 rounded">Streak: 3-day productivity</span>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</body>
+</html>

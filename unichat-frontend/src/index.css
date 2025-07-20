@@ -78,7 +78,7 @@
 /* Base styles */
 * {
   border-color: var(--border);
-  outline: 2px solid color-mix(in srgb, var(--ring) 50%, transparent);
+  /* outline: 2px solid color-mix(in srgb, var(--ring) 50%, transparent); */
 }
 
 body {
