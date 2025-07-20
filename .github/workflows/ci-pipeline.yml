@@ -1,5 +1,3 @@
-# .github/workflows/ci-pipeline.yml
-
 name: UniChat CI Pipeline
 
 on:
