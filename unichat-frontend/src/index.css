@@ -118,3 +118,34 @@
     @apply bg-background text-foreground;
   }
 }
+
+.login-image-bg {
+  /* Replace with your own campus image */
+  background-image: url('/Login-page.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.group:focus-within .group-hover\:ring-2 {
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.button:hover {
+  transition: background-color 0.2s ease-in-out;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
