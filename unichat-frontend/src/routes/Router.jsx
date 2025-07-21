@@ -25,7 +25,7 @@ const SystemLogsPage = lazy(() => import('../pages/admin/SystemLogsPage'));
 const BroadcastPage = lazy(() => import('../pages/admin/BroadcastPage'));
 const MaterialsPage = lazy(() => import('../pages/MaterialsPage'));
 const ProfilePage = lazy(() => import('../pages/ProfilePage'));
-const GradesPage = lazy(() => import('../pages/GradesPage'));
+import GlobalHeader from '../components/Header';
 
 // Loading Fallback Component
 const PageLoader = () => (
@@ -77,6 +77,7 @@ function Router() {
 
   return (
     <BrowserRouter>
+      <GlobalHeader />
       <ErrorBoundary>
         <Suspense fallback={<PageLoader />}>
           <Routes>
@@ -90,7 +91,6 @@ function Router() {
             <Route path="/admin/broadcast" element={<ProtectedRoute><RoleBasedLayout><BroadcastPage /></RoleBasedLayout></ProtectedRoute>} />
             <Route path="/materials" element={<ProtectedRoute><RoleBasedLayout><MaterialsPage /></RoleBasedLayout></ProtectedRoute>} />
             <Route path="/profile" element={<ProtectedRoute><RoleBasedLayout><ProfilePage /></RoleBasedLayout></ProtectedRoute>} />
-            <Route path="/grades" element={<ProtectedRoute><RoleBasedLayout><GradesPage /></RoleBasedLayout></ProtectedRoute>} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </Suspense>

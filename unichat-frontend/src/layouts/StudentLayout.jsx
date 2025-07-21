@@ -9,21 +9,23 @@ const StudentLayout = ({ children }) => {
 
   const navigation = [
     { name: 'Dashboard', href: '/' },
-    { name: 'Chat', href: '/chat' },
-    { name: 'Tasks', href: '/tasks' },
+    { name: 'Messages', href: '/chat' },
     { name: 'Calendar', href: '/calendar' },
+    { name: 'Courses', href: '/courses' },
+    { name: 'Tasks', href: '/tasks' },
+    { name: 'AI Assistant', href: '/ai' },
     { name: 'Materials', href: '/materials' },
-    { name: 'Grades', href: '/grades' },
+    { name: 'Announcement', href: '/announcements' },
+    { name: 'Settings', href: '/settings' },
   ];
 
   const currentPage = navigation.find(item => item.href === location.pathname) || { name: 'UniChat' };
 
   return (
     <div className="min-h-screen bg-gray-100 flex">
-      <aside className="w-64 bg-white shadow-md flex-col hidden md:flex">
-        <div className="flex items-center justify-center h-16 bg-blue-600">
-          <h1 className="text-xl font-bold text-white">UniChat</h1>
-        </div>
+      {/* Spacer for fixed global header */}
+      <div className="w-0 h-16" />
+      <aside className="w-64 bg-white shadow-md flex-col hidden md:flex mt-16">
         <nav className="flex-1 px-4 py-6 space-y-1">
           {navigation.map((item) => (
             <Link
@@ -40,10 +42,8 @@ const StudentLayout = ({ children }) => {
           ))}
         </nav>
       </aside>
-
       <div className="flex-1 flex flex-col">
-        <Header title={currentPage.name} />
-        <main className="flex-1 p-6 overflow-y-auto">
+        <main className="flex-1">
             {children}
         </main>
       </div>
